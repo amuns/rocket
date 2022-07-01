@@ -1,0 +1,20 @@
+create table users(    user_id int primary key auto_increment,     uname varchar(255) unique not null,    pass varchar(255) not null,    email varchar(255) unique not null,    createdAt datetime DEFAULT CURRENT_TIMESTAMP,     updatedAt datetime ON UPDATE CURRENT_TIMESTAMP);
++---------+-------+--------------------------------------------------------------+---------------------+---------------------+---------------------+
+| user_id | uname | pass                                                         | email               | createdAt           | updatedAt           |
++---------+-------+--------------------------------------------------------------+---------------------+---------------------+---------------------+
+|       1 | amun  | $2y$10$oVIzWPVCH5vhUkichYU3dOkUkFNA7oGY1Si6IRtVWhb6dIlPP8cjS | amunpote@gmail.com  | 2022-05-16 22:58:02 | NULL                |
+|       2 | amun2 | $2y$10$oVIzWPVCH5vhUkichYU3dOkUkFNA7oGY1Si6IRtVWhb6dIlPP8cjS | amunpote2@gmail.com | 2022-05-16 23:11:42 | 2022-05-16 23:59:08 |
++---------+-------+--------------------------------------------------------------+---------------------+---------------------+---------------------+
+
+create table products(    product_id int primary key auto_increment,    product_key varchar(255) not null,     product_name varchar(255) not null,    price int not null,     quantity int,     company_id varchar(10),    createdAt datetime DEFAULT CURRENT_TIMESTAMP,     updatedAt datetime ON UPDATE CURRENT_TIMESTAMP); 
+alter table products add constraint fkey1 FOREIGN KEY(company_id) references company(company_id);
+
+create table company(    company_id varchar(10) primary key,     company_name varchar(255) not null,     company_code varchar(255) not null,     createdAt datetime DEFAULT CURRENT_TIMESTAMP,     updatedAt datetime ON UPDATE CURRENT_TIMESTAMP); 
+
+create table invoice(    invoice_no int primary key,     invoice_date datetime,     customer_id int);
+alter table invoice add constraint fkey2 FOREIGN KEY(customer_id) REFERENCES customers(customer_id);
+
+create table invoice_item(    item_no int primary key,     item_desc varchar(255),     item_price int,     quantity int,     invoice_no int);
+alter table invoice_item add constraint fkey_invoice_item FOREIGN KEY(invoice_no) REFERENCES invoice(invoice_no);
+
+create table customers(    customer_id int primary key,     customer_name varchar(255) not null,     customer_email varchar(255) unique not null,     customer_address varchar(255) not null,     customer_contact varchar(10) unique not null,    createdAt datetime DEFAULT CURRENT_TIMESTAMP,     updatedAt datetime ON UPDATE CURRENT_TIMESTAMP);
