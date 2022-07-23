@@ -1,5 +1,5 @@
 <?php
-   /*  require_once 'db/db-conn.php';
+    /* require_once 'db/db-conn.php';
     $salt='@PLDtOO#';
     $p=$salt."@changee";
     echo password_hash($p, PASSWORD_DEFAULT);
@@ -9,8 +9,8 @@
         ':uname'=>'amun',
         ':pass'=>'$2y$10$oVIzWPVCH5vhUkichYU3dOkUkFNA7oGY1Si6IRtVWhb6dIlPP8cjS',
         ':email'=>'amunpote@gmail.com'
-    ));
- */
+    )); */
+
     
     
 ?>

@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  
 </head>
 <body>
   <div class="container-scroller">
@@ -175,8 +176,8 @@
               <img class="img-xs rounded-circle" src="images/faces/user.png" alt="Profile image"> </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <div class="dropdown-header text-center">
-                <p class="mb-1 mt-3 font-weight-semibold"><?=$_SESSION['userData']['uname']?></p>
-                <p class="fw-light text-muted mb-0"><?=$_SESSION['userData']['email']?></p>
+                <p class="mb-1 mt-3 font-weight-semibold" style="font-size: 14px;"><?=$_SESSION['userData']['uname']?></p>
+                <p class="fw-light text-muted mb-0" style="font-size: 14px;"><?=$_SESSION['userData']['email']?></p>
               </div>
               <!-- <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
@@ -223,14 +224,14 @@
           <li class="nav-item">
             <a class="nav-link" href="dashboard.php?uid=<?=$_GET['uid']?>">
               <i class="mdi mdi-grid-large menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
+              <span class="menu-title" style="font-size: 16px;">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item nav-category">UI Elements</li>
+          <li class="nav-item nav-category" style="font-size: 16px;">UI Elements</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <i class="menu-icon mdi mdi-floor-plan"></i>
-              <span class="menu-title">UI Elements</span>
+              <span class="menu-title" style="font-size: 15px;">UI Elements</span>
               <i class="menu-arrow"></i> 
             </a>
             <div class="collapse" id="ui-basic">
@@ -268,16 +269,16 @@
                 <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                   <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+                      <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true" style="font-size: 14px;">Overview</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false">Audiences</a>
+                      <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false" style="font-size: 14px;">Audiences</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab" aria-selected="false">Demographics</a>
+                      <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#demographics" role="tab" aria-selected="false" style="font-size: 14px;">Demographics</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab" aria-selected="false">More</a>
+                      <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab" aria-selected="false" style="font-size: 14px;">More</a>
                     </li>
                   </ul>
                   <!-- <div>
