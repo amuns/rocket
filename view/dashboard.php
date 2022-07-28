@@ -31,7 +31,6 @@
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="images/favicon.png" />
   
 </head>
 <body>
@@ -227,20 +226,27 @@
               <span class="menu-title" style="font-size: 16px;">Dashboard</span>
             </a>
           </li>
+
+          
+
+          
           <li class="nav-item nav-category" style="font-size: 16px;">UI Elements</li>
           <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <i class="menu-icon mdi mdi-floor-plan"></i>
-              <span class="menu-title" style="font-size: 15px;">UI Elements</span>
-              <i class="menu-arrow"></i> 
+            <a class="nav-link"  href="company/company.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Company</span>
+              <!-- <i class="menu-arrow"></i>  -->
             </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="product/product.php?uid=<?=$_GET['uid']?>">Products</a></li>
-                <li class="nav-item"> <a class="nav-link" href="company/company.php?uid=<?=$_GET['uid']?>">Company</a></li>
-                <!-- <li class="nav-item"> <a class="nav-link" href="invoice/invoice.php">Invoice</a></li> -->
-              </ul>
-            </div>
+            
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="product/products.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Products</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
           </li>
           
           

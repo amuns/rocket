@@ -8,6 +8,51 @@
     header('location: ../../auth/login.php');
     exit;
   }
+  
+  if(isset($_POST, $_POST['back'])){
+
+  }
+
+    define("old_cid", $_POST['cid']);
+    
+    $stmt=$conn->query("SELECT * from company WHERE company_id='".old_cid."'");
+    $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if(isset($_POST, $_POST['cid'], $_POST['cname'], $_POST['ccode'], $_POST['update'])){
+    $cid=validate($_POST['cid']);
+    $cname=validate($_POST['cname']);
+    $ccode=validate($_POST['ccode']);
+
+   
+    try{
+      $stmt=$conn->prepare("UPDATE company SET company_id=:cid, company_name=:cname, company_code=:ccode) WHERE company_id='".old_cid."'");
+      $stmt->execute(array(
+        ":cid"=>$cid, 
+        ":cname"=>$cname,
+        ":ccode"=>$ccode
+      ));
+
+      if($stmt){
+        $_SESSION['success']="Company table updated!";
+        header("location: company.php?uid=".$_GET['uid']);
+        exit;
+      }
+    }
+    catch(Exception $e){
+        $_SESSION['error']=$e;
+    //   $_SESSION['error']="Invalid Company Details!";
+      header("location: company.php?uid=".$_GET['uid']);
+      exit;
+    }
+    
+    
+    
+  }
+  
+  
+    
+
+                                    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +76,7 @@
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
-  
+  <!-- endinject -->
   <style rel="stylesheet">
     .button {
      
@@ -45,7 +90,7 @@
     }
     .button1 {
     
-      background-color: #008CBA;
+      background-color: #4CAF50;
       color: white;
       padding: 15px 32px;
       border:none;
@@ -54,23 +99,23 @@
 
     .button1:hover {
       background-color: white;
-      color: #008CBA;
-    }
-    .button2 {
-    
-      background-color: red;
-      color: white;
-      padding: 15px 32px;
-      border:none;
-      border-radius:10px;
+      color: #4CAF50;
     }
 
-    .button2:hover{
-      background-color: white;
-      color: red;
-    }
+    .button2 {
+    
+    background-color: #008CBA;
+    color: white;
+    padding: 15px 32px;
+    border:none;
+    border-radius:10px;
+  }
+
+  .button2:hover {
+    background-color: white;
+    color: #008CBA;
+  }
   </style>
-  <!-- endinject -->
   
 </head>
 <body>
@@ -225,15 +270,7 @@
             <div class="col-sm-12">
               <div class="home-tab">
                 <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-                  <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link active ps-0" href="company.php?uid=<?=$_GET['uid']?>" style="font-size: 14px;">Overview</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="addcompany.php?uid=<?=$_GET['uid']?>" role="tab" aria-selected="true" style="font-size: 14px;">Add Company</a>
-                    </li>
-                   
-                  </ul>
+                  
                   <!-- <div>
                     <div class="btn-wrapper">
                       <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
@@ -245,67 +282,26 @@
                 <div class="tab-content tab-content-basic">
                   <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview"> 
                     
+                    
                     <div class="row">
-                      
-                      <div class="col-lg-4 d-flex flex-column">
-                        <div class="row flex-grow">
-                          
-                          
-                        </div>
-                      </div>
-                    </div>
-                    <p><?=flashMessages()?></p><br>
-                    <div class="row">
+                    &nbsp;<h2>Update Company</h2>
+                    <p style="font-size: 14px;"><?=flashMessages()?></p>
                       <div class="col-lg-8 d-flex flex-column">
                         <div class="row flex-grow">
                           <div class="col-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                  <table class="table table-bordered">
-                                    <tr>
-                                      <th>Company Id</th>
-                                      <th>Company Name</th>
-                                      <th>Company Code</th>
-                                      <th>CreatedAt</th>
-                                      <th>UpdatedAt</th>
-                                      <th>Action</th>
-                                    </tr>
+                                  
+                                  
+                                  <form method="POST" action="editcompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$_GET['cid']?>">
+                                     
+                                    Company ID: <input type="text" name="cid" value="<?=validate($row[0]['company_id'])?>" required><br><br>
+                                    Company Name: <input type="text" name="cname" value="<?=validate($row[0]['company_name'])?>" required><br><br>
+                                    Company Code: <input type="text" name="ccode" value="<?=validate($row[0]['company_code'])?>" required><br><br>
+                                    <button class="button1" name="update">Update</button> &nbsp;&nbsp; <button class="button2" name="back">Back</button>
+                                  </form>
 
-                                    <?php 
-                                      $stmt=$conn->query('SELECT * from company');
-                                      while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
-                                        echo "<tr>";
-                                          echo "<td>".validate($row['company_id'])."</td>";
-                                          echo "<td>".validate($row['company_name'])."</td>";
-                                          echo "<td>".validate($row['company_code'])."</td>";
-                                          echo "<td>".validate($row['createdAt'])."</td>";
-                                          echo "<td>".validate($row['updatedAt'])."</td>";
-                                          ?>
-                                            <td>
-                                              <form action="editcompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$row['company_id']?>" method="post">
-                                                <input type="hidden" name="cid" value="<?=$row['company_id']?>">
-                                                <button class="button1"><b>Edit</b></button> &nbsp; 
-                                              </form>
-                                              <!-- button ko lagi link create garna onclick="window.location.href='deletecompany.php?';" -->
-                                              <form method="POST" action="deletecompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$row['company_id']?>">
-                                                <button class="button2" name="deletecompany" ><b>Delete</b></button>
-                                              </form>
-                                            </td>      
-                                          <?php
-                                        echo "</tr>";
-                                      }
-                                    ?>
-
-                                  </table>
-                                  <!-- <table class="table table-bordered"> -->
-                            
-                                <!-- <td>
-                                <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                                <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                                <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                                </td> -->
-                              
                                 </div>
                                 
                               </div>
@@ -416,7 +412,6 @@
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
   <!-- End custom js for this page-->
-  
 </body>
 
 </html>

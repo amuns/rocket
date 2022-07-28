@@ -17,4 +17,11 @@
             unset($_SESSION['error']);
         }
     }
+
+    function validate($str){
+        trim($str);
+        htmlentities($str);
+        htmlspecialchars($str);
+        return $str;
+    }
 ?>
