@@ -10,12 +10,12 @@
   }
   
   if(isset($_POST, $_POST['back'])){
-
+    header("location: company.php?uid=".$_GET['uid']);
+    unset($_POST);
+    exit;
   }
-
-    define("old_cid", $_POST['cid']);
-    
-    $stmt=$conn->query("SELECT * from company WHERE company_id='".old_cid."'");
+    $cid=$_GET['cid'];
+    $stmt=$conn->query("SELECT * from company WHERE company_id='$cid'");
     $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
 
   if(isset($_POST, $_POST['cid'], $_POST['cname'], $_POST['ccode'], $_POST['update'])){
@@ -25,13 +25,13 @@
 
    
     try{
-      $stmt=$conn->prepare("UPDATE company SET company_id=:cid, company_name=:cname, company_code=:ccode) WHERE company_id='".old_cid."'");
-      $stmt->execute(array(
-        ":cid"=>$cid, 
-        ":cname"=>$cname,
-        ":ccode"=>$ccode
-      ));
-
+      $oldcid=$_GET['cid'];
+      $stmt=$conn->prepare("UPDATE company SET company_id='$cid', company_name='$cname', company_code='$ccode' WHERE company_id='$oldcid'");
+      /* $stmt->bindParam(":cid", $cid);
+      $stmt->bindParam(":cname", $cname);
+      $stmt->bindParam(":ccode", $ccode); */
+      
+      $stmt->execute();
       if($stmt){
         $_SESSION['success']="Company table updated!";
         header("location: company.php?uid=".$_GET['uid']);
@@ -39,8 +39,8 @@
       }
     }
     catch(Exception $e){
-        $_SESSION['error']=$e;
-    //   $_SESSION['error']="Invalid Company Details!";
+        // $_SESSION['error']=$e;
+      $_SESSION['error']="Invalid Company Details!";
       header("location: company.php?uid=".$_GET['uid']);
       exit;
     }
@@ -98,7 +98,7 @@
     }
 
     .button1:hover {
-      background-color: white;
+      background-color: #d8d8d8;
       color: #4CAF50;
     }
 
@@ -112,7 +112,7 @@
   }
 
   .button2:hover {
-    background-color: white;
+    background-color: #d8d8d8;
     color: #008CBA;
   }
   </style>

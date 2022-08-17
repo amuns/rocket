@@ -47,26 +47,26 @@
     
       background-color: #008CBA;
       color: white;
-      padding: 15px 32px;
+      padding: 10px 15px;
       border:none;
       border-radius:10px;
     }
 
     .button1:hover {
-      background-color: white;
+      background-color: #d8d8d8;
       color: #008CBA;
     }
     .button2 {
     
       background-color: red;
       color: white;
-      padding: 15px 32px;
+      padding: 10px 15px;
       border:none;
       border-radius:10px;
     }
 
     .button2:hover{
-      background-color: white;
+      background-color: #d8d8d8;
       color: red;
     }
   </style>
@@ -283,14 +283,12 @@
                                           echo "<td>".validate($row['updatedAt'])."</td>";
                                           ?>
                                             <td>
-                                              <form action="editcompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$row['company_id']?>" method="post">
-                                                <input type="hidden" name="cid" value="<?=$row['company_id']?>">
-                                                <button class="button1"><b>Edit</b></button> &nbsp; 
-                                              </form>
+                                              
+                                                <button class="button1" onclick="window.location.href='editcompany.php?uid=<?=$_GET['uid']?>&cid=<?=$row['company_id']?>';"><b>Edit</b></button> &nbsp; 
                                               <!-- button ko lagi link create garna onclick="window.location.href='deletecompany.php?';" -->
-                                              <form method="POST" action="deletecompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$row['company_id']?>">
-                                                <button class="button2" name="deletecompany" ><b>Delete</b></button>
-                                              </form>
+                                                <form method="POST" action="deletecompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$row['company_id']?>" style="float: right;">
+                                                  <button class="button2" name="deletecompany" ><b>Delete</b></button>
+                                                </form>
                                             </td>      
                                           <?php
                                         echo "</tr>";

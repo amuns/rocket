@@ -241,7 +241,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link"  href="product/products.php?uid=<?=$_GET['uid']?>">
+            <a class="nav-link"  href="products/products.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Products</span>
               <!-- <i class="menu-arrow"></i>  -->

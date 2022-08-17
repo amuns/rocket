@@ -10,7 +10,14 @@
         ':pass'=>'$2y$10$oVIzWPVCH5vhUkichYU3dOkUkFNA7oGY1Si6IRtVWhb6dIlPP8cjS',
         ':email'=>'amunpote@gmail.com'
     )); */
-
+    require_once 'db/db-conn.php';
+    $stmt=$conn->prepare("UPDATE company SET company_name='aa' WHERE company_id='aa'");
+    /* $stmt->execute(array(
+        ':cname'=>"test"
+    )); */
     
-    
+    $stmt->execute();
+    if($stmt){
+        echo "error";
+    }
 ?>

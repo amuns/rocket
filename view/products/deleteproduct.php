@@ -4,31 +4,32 @@
     require '../../utils.php';
 
     $uid=$_GET['uid'];
-    $cid=$_GET['cid'];
-   
-    if(isset($_POST, $_POST['deletecompany'])){
+    $pid=$_GET['pid'];
+    
+    if(isset($_POST, $_POST['deleteproduct'])){
         
         try{
-            $stmt=$conn->query("DELETE from company WHERE company_id='$cid'");
+            $stmt=$conn->query("DELETE from products WHERE product_id=$pid");
             $stmt->execute();
 
             if($stmt){
                 $_SESSION['error']="Table updated!";
-                header("location: company.php?uid=$uid");
+                header("location: products.php?uid=$uid");
                 exit;
             }
             
         }
         catch(Exception $e){
             $_SESSION['error']="Oops deletion error!";
-            header("location: company.php?uid=$uid");
+            header("location: products.php?uid=$uid");
             exit;
         }
     }
     else{
         $_SESSION['error']="Oops unidentified error!";
-        header("location: company.php?uid=$uid");
+        header("location: products.php?uid=$uid");
         exit;
     }
+    
     
 ?>
