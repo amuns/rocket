@@ -10,38 +10,41 @@
   }
   
   if(isset($_POST, $_POST['back'])){
-    header("location: company.php?uid=".$_GET['uid']);
+    header("location: products.php?uid=".$_GET['uid']);
     unset($_POST);
     exit;
   }
-    $cid=$_GET['cid'];
-    $stmt=$conn->query("SELECT * from company WHERE company_id='$cid'");
+    $pid=$_GET['pid'];
+    $stmt=$conn->query("SELECT * from products WHERE product_id=$pid");
     $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  if(isset($_POST, $_POST['cid'], $_POST['cname'], $_POST['ccode'], $_POST['update'])){
+  if(isset($_POST, $_POST['pkey'], $_POST['pname'], $_POST['cprice'], $_POST['sprice'], $_POST['quantity'], $_POST['cid'])){
+    $pkey=validate($_POST['pkey']);
+    $pname=validate($_POST['pname']);
+    $cprice=validate($_POST['cprice']);
+    $sprice=validate($_POST['sprice']);
+    $quantity=validate($_POST['quantity']);
     $cid=validate($_POST['cid']);
-    $cname=validate($_POST['cname']);
-    $ccode=validate($_POST['ccode']);
 
    
     try{
-      $oldcid=$_GET['cid'];
-      $stmt=$conn->prepare("UPDATE company SET company_id='$cid', company_name='$cname', company_code='$ccode' WHERE company_id='$oldcid'");
+      $oldpid=$_GET['pid'];
+      $stmt=$conn->prepare("UPDATE products SET product_key='$pkey', product_name='$pname', cprice=$cprice, sprice=$sprice, quantity=$quantity, company_id='$cid' WHERE product_id=$oldpid");
       /* $stmt->bindParam(":cid", $cid);
       $stmt->bindParam(":cname", $cname);
       $stmt->bindParam(":ccode", $ccode); */
       
       $stmt->execute();
       if($stmt){
-        $_SESSION['success']="Company table updated!";
-        header("location: company.php?uid=".$_GET['uid']);
+        $_SESSION['success']="Products table updated!";
+        header("location: products.php?uid=".$_GET['uid']);
         exit;
       }
     }
     catch(Exception $e){
         // $_SESSION['error']=$e;
-      $_SESSION['error']="Invalid Company Details!";
-      header("location: company.php?uid=".$_GET['uid']);
+      $_SESSION['error']="Invalid Product Details!";
+      header("location: editproduct.php?uid=".$_GET['uid']);
       exit;
     }
     
@@ -241,7 +244,7 @@
           
           <li class="nav-item nav-category" style="font-size: 16px;">UI Elements</li>
           <li class="nav-item">
-            <a class="nav-link"  href="company.php?uid=<?=$_GET['uid']?>">
+            <a class="nav-link"  href="../company/company.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Company</span>
               <!-- <i class="menu-arrow"></i>  -->
@@ -250,14 +253,14 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link"  href="../products/products.php?uid=<?=$_GET['uid']?>">
+            <a class="nav-link"  href="products.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Products</span>
               <!-- <i class="menu-arrow"></i>  -->
             </a>
             
           </li>
-
+          
           <li class="nav-item">
             <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
@@ -266,7 +269,6 @@
             </a>
             
           </li>
-          
           
           
           
@@ -293,7 +295,7 @@
                     
                     
                     <div class="row">
-                    &nbsp;<h2>Update Company</h2>
+                    &nbsp;<h2>Update Product</h2>
                     <p style="font-size: 14px;"><?=flashMessages()?></p>
                       <div class="col-lg-8 d-flex flex-column">
                         <div class="row flex-grow">
@@ -303,11 +305,25 @@
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   
                                   
-                                  <form method="POST" action="editcompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$_GET['cid']?>">
+                                  <form method="POST" action="editproduct.php?uid=<?=$_GET['uid']?>&&pid=<?=$_GET['pid']?>">
                                      
-                                    Company ID: <input type="text" name="cid" value="<?=validate($row[0]['company_id'])?>" required><br><br>
-                                    Company Name: <input type="text" name="cname" value="<?=validate($row[0]['company_name'])?>" required><br><br>
-                                    Company Code: <input type="text" name="ccode" value="<?=validate($row[0]['company_code'])?>" required><br><br>
+                                    Product Key: <input type="text" name="pkey" value="<?=validate($row[0]['product_key'])?>" required><br><br>
+                                    Product Name: <input type="text" name="pname" value="<?=validate($row[0]['product_name'])?>" required><br><br>
+                                    Cost Price: <input type="text" name="cprice" placeholder="RS." value="<?=validate($row[0]['cprice']);?>" required><br><br>
+                                    Selling Price: <input type="text" name="sprice" placeholder="RS." value="<?=validate($row[0]['sprice']);?>" required><br><br>
+                                    Quantity: <input type="text" name="quantity" value="<?=validate($row[0]['quantity'])?>" required><br><br>
+                                    Company ID: <select name="cid">
+                                      <?php
+                                            $stmt1=$conn->query("SELECT company_id, company_name from company");
+                                            $comp=$stmt1->fetchall(PDO::FETCH_ASSOC);
+                                            foreach($comp as $compData){
+                                        ?>
+                                            <option value="<?=$compData['company_id']?>" <?=($row[0]['company_id'] == $compData['company_id'])?'selected':'';?>><?=$compData['company_name']?></option>
+                                        <?php
+                                            }
+                                            
+                                        ?>
+                                    </select><br><br>
                                     <button class="button1" name="update">Update</button> &nbsp;&nbsp; <button class="button2" name="back">Back</button>
                                   </form>
 

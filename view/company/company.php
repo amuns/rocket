@@ -213,6 +213,14 @@
             
           </li>
           
+          <li class="nav-item">
+            <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Sales</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
+          </li>
           
           
           

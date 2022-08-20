@@ -15,21 +15,21 @@
     exit;
   }
 
-  if(isset($_POST, $_POST['pid'], $_POST['pkey'], $_POST['pname'], $_POST['price'], $_POST['quantity'], $_POST['cid'])){
-    $pid=validate($_POST['pid']);
+  if(isset($_POST, $_POST['pkey'], $_POST['pname'], $_POST['cprice'], $_POST['sprice'], $_POST['quantity'], $_POST['cid'])){
     $pkey=validate($_POST['pkey']);
     $pname=validate($_POST['pname']);
-    $price=validate($_POST['price']);
+    $cprice=validate($_POST['cprice']);
+    $sprice=validate($_POST['sprice']);
     $quantity=validate($_POST['quantity']);
     $cid=validate($_POST['cid']);
    
     try{
-      $stmt=$conn->prepare("INSERT into products(product_id, product_key, product_name, price, quantity, company_id) VALUES(:pid, :pkey, :pname, :price, :quantity, :cid)");
+      $stmt=$conn->prepare("INSERT into products(product_key, product_name, cprice, sprice, quantity, company_id) VALUES(:pkey, :pname, :cprice, :sprice, :quantity, :cid)");
       $stmt->execute(array(
-        ":pid"=>$pid, 
         ":pkey"=>$pkey, 
         ":pname"=>$pname,
-        ":price"=>$price,
+        ":cprice"=>$cprice,
+        ":sprice"=>$sprice,
         ":quantity"=>$quantity,
         ":cid"=>$cid
       ));
@@ -255,6 +255,15 @@
             </a>
             
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Sales</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
+          </li>
           
           
           
@@ -301,10 +310,10 @@
                                   
                                   
                                   <form method="POST" action="addproduct.php?uid=<?=$_GET['uid']?>"> 
-                                    Product ID: <input type="number" name="pid" required><br><br>
                                     Product Key: <input type="text" name="pkey" required><br><br>
                                     Product Name: <input type="text" name="pname" required><br><br>
-                                    Price: <input type="text" name="price" required><br><br>
+                                    Cost Price: <input type="text" name="cprice" required><br><br>
+                                    Selling Price: <input type="text" name="sprice" required><br><br>
                                     Quantity: <input type="text" name="quantity" required><br><br>
                                     Company: <select name="cid">
                                       <option value="">--Select Company--</option>

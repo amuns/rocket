@@ -1,59 +1,38 @@
-<?php 
-  session_start();
-  require '../../utils.php';
-  require '../../db/db-conn.php';
+<?php
+    session_start();
+    require '../../db/db-conn.php';
+    require '../../utils.php';
+    date_default_timezone_set('Asia/Kathmandu');
 
-  if(!isset($_SESSION['user_logged_in'], $_SESSION['userData'])){
-    $_SESSION['error']="Please Log in!";
-    header('location: ../../auth/login.php');
-    exit;
-  }
-  
-  if(isset($_POST, $_POST['back'])){
-    header("location: company.php?uid=".$_GET['uid']);
-    unset($_POST);
-    exit;
-  }
-    $cid=$_GET['cid'];
-    $stmt=$conn->query("SELECT * from company WHERE company_id='$cid'");
-    $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
+    if(isset($_POST, $_POST['sales'])){
+        $stmt=$conn->query("SELECT * from invoice");
+        $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        $date=date('Y-m-d::H-i');
+        foreach ($row as $data) {
+            $invoice=$data['invoice_no'];
+            $pname=$data['product_name'];
+            $qty=$data['quantity'];
+            $amt=$data['amt'];
+            $profit=$data['profit'];
+            $sprice=$data['sprice'];
 
-  if(isset($_POST, $_POST['cid'], $_POST['cname'], $_POST['ccode'], $_POST['update'])){
-    $cid=validate($_POST['cid']);
-    $cname=validate($_POST['cname']);
-    $ccode=validate($_POST['ccode']);
+            $stmt2=$conn->prepare("INSERT INTO sales(invoice_no, date, product_name, qty, amt, profit, sprice) VALUES(:a, :b, :c, :d, :e, :f, :g)");
+            $stmt2->execute(array(
+                ":a"=>$invoice,
+                ":b"=>$date,
+                ":c"=>$pname,
+                ":d"=>$qty,
+                ":e"=>$amt,
+                ":f"=>$profit,
+                ":g"=>$sprice
+            ));
 
-   
-    try{
-      $oldcid=$_GET['cid'];
-      $stmt=$conn->prepare("UPDATE company SET company_id='$cid', company_name='$cname', company_code='$ccode' WHERE company_id='$oldcid'");
-      /* $stmt->bindParam(":cid", $cid);
-      $stmt->bindParam(":cname", $cname);
-      $stmt->bindParam(":ccode", $ccode); */
-      
-      $stmt->execute();
-      if($stmt){
-        $_SESSION['success']="Company table updated!";
-        header("location: company.php?uid=".$_GET['uid']);
-        exit;
-      }
+            $stmt3=$conn->prepare("UPDATE products SET quantity=quantity-$qty WHERE product_name='$pname'");
+            $stmt3->execute();
+        }
     }
-    catch(Exception $e){
-        // $_SESSION['error']=$e;
-      $_SESSION['error']="Invalid Company Details!";
-      header("location: company.php?uid=".$_GET['uid']);
-      exit;
-    }
-    
-    
-    
-  }
-  
-  
-    
-
-                                    
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,7 +55,8 @@
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
-  <!-- endinject -->
+
+  
   <style rel="stylesheet">
     .button {
      
@@ -90,32 +70,32 @@
     }
     .button1 {
     
-      background-color: #4CAF50;
+      background-color: #008CBA;
       color: white;
-      padding: 15px 32px;
+      padding: 10px 15px;
       border:none;
       border-radius:10px;
     }
 
     .button1:hover {
       background-color: #d8d8d8;
-      color: #4CAF50;
+      color: #008CBA;
     }
-
     .button2 {
     
-    background-color: #008CBA;
-    color: white;
-    padding: 15px 32px;
-    border:none;
-    border-radius:10px;
-  }
+      background-color: red;
+      color: white;
+      padding: 10px 15px;
+      border:none;
+      border-radius:10px;
+    }
 
-  .button2:hover {
-    background-color: #d8d8d8;
-    color: #008CBA;
-  }
+    .button2:hover{
+      background-color: #d8d8d8;
+      color: red;
+    }
   </style>
+  <!-- endinject -->
   
 </head>
 <body>
@@ -172,10 +152,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <form class="search-form" action="#">
-              <i class="icon-search"></i>
-              <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-            </form>
+            
           </li>
          
           </li> 
@@ -241,7 +218,7 @@
           
           <li class="nav-item nav-category" style="font-size: 16px;">UI Elements</li>
           <li class="nav-item">
-            <a class="nav-link"  href="company.php?uid=<?=$_GET['uid']?>">
+            <a class="nav-link"  href="../company/company.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Company</span>
               <!-- <i class="menu-arrow"></i>  -->
@@ -259,7 +236,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
+            <a class="nav-link"  href="sales.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Sales</span>
               <!-- <i class="menu-arrow"></i>  -->
@@ -279,7 +256,15 @@
             <div class="col-sm-12">
               <div class="home-tab">
                 <div class="d-sm-flex align-items-center justify-content-between border-bottom">
-                  
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active ps-0" href="company.php?uid=<?=$_GET['uid']?>" style="font-size: 14px;">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="addproduct.php?uid=<?=$_GET['uid']?>" role="tab" aria-selected="true" style="font-size: 14px;">Allow Discount</a>
+                    </li>
+                   
+                  </ul>
                   <!-- <div>
                     <div class="btn-wrapper">
                       <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
@@ -291,26 +276,77 @@
                 <div class="tab-content tab-content-basic">
                   <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview"> 
                     
-                    
                     <div class="row">
-                    &nbsp;<h2>Update Company</h2>
-                    <p style="font-size: 14px;"><?=flashMessages()?></p>
-                      <div class="col-lg-8 d-flex flex-column">
+                      
+                      <div class="col-lg-4 d-flex flex-column">
+                        <div class="row flex-grow">
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <form class="search-form" action="products.php?uid=<?=$_GET['uid']?>">
+                      <textarea name="" cols="30" id="search_data" rows="1" placeholder="Search by Date"></textarea>
+                      <button><i class="icon-search"></i></button>
+                    </form>
+                    
+                    <p><?=flashMessages()?></p><br>
+                    
+                    
+                  
+                    <div class="row">
+                      <div class="col-lg-13 d-flex flex-column">
                         <div class="row flex-grow">
                           <div class="col-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                   
-                                  
-                                  <form method="POST" action="editcompany.php?uid=<?=$_GET['uid']?>&&cid=<?=$_GET['cid']?>">
-                                     
-                                    Company ID: <input type="text" name="cid" value="<?=validate($row[0]['company_id'])?>" required><br><br>
-                                    Company Name: <input type="text" name="cname" value="<?=validate($row[0]['company_name'])?>" required><br><br>
-                                    Company Code: <input type="text" name="ccode" value="<?=validate($row[0]['company_code'])?>" required><br><br>
-                                    <button class="button1" name="update">Update</button> &nbsp;&nbsp; <button class="button2" name="back">Back</button>
-                                  </form>
+                                  <table class="table table-bordered" id="table_data">
+                                    <tr>
+                                      <th>S No.</th>
+                                      <th>Invoice No.</th>
+                                      <th>Date</th>
+                                      <th>Product Name</th>
+                                      <th>Quantity</th>
+                                      <th>Amount</th>
+                                      <th>SP (RS.)</th>
+                                      <th>Profit</th>
+                                      <th>Action</th>
+                                    </tr>
 
+                                    <?php 
+                                      $stmt=$conn->query('SELECT * from sales');
+                                      $i=1;
+                                      while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
+                                        echo "<tr>";
+                                          echo "<td>".$i."</td>";$i++;
+                                          echo "<td>".validate($row['invoice_no'])."</td>";
+                                          echo "<td>".validate($row['date'])."</td>";
+                                          echo "<td>".validate($row['product_name'])."</td>";
+                                          echo "<td>".validate($row['qty'])."</td>";
+                                          echo "<td>RS. ".validate($row['amt'])."</td>";
+                                          echo "<td>RS. ".validate($row['sprice'])."</td>";
+                                          echo "<td>RS. ".validate($row['profit'])."</td>";
+                                          ?>
+                                            <td>
+                                              
+                                                action
+                                            </td>      
+                                          <?php
+                                        echo "</tr>";
+                                      }
+                                    ?>
+
+                                  </table>
+                                  <!-- <table class="table table-bordered"> -->
+                            
+                                <!-- <td>
+                                <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                                <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                                </td> -->
+                              
                                 </div>
                                 
                               </div>
@@ -421,6 +457,7 @@
   <script src="../js/dashboard.js"></script>
   <script src="../js/Chart.roundedBarCharts.js"></script>
   <!-- End custom js for this page-->
+  
 </body>
 
 </html>

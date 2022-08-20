@@ -37,6 +37,7 @@
     }
     catch(Exception $e){
       $_SESSION['error']="Invalid Company Details!";
+      // $_SESSION['error']=$e;
       header("location: addcompany.php?uid=".$_GET['uid']);
       exit;
     }
@@ -245,6 +246,15 @@
             <a class="nav-link"  href="../products/products.php?uid=<?=$_GET['uid']?>">
               <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
               <span class="menu-title" style="font-size: 15px;">Products</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Sales</span>
               <!-- <i class="menu-arrow"></i>  -->
             </a>
             

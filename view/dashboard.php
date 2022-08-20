@@ -1,5 +1,6 @@
 <?php 
   session_start();
+  require '../db/db-conn.php';
   require '../utils.php';
 
   if(!isset($_SESSION['user_logged_in'], $_SESSION['userData'])){
@@ -31,6 +32,53 @@
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
   <!-- endinject -->
+
+  <style type="text/css">
+    .button {
+      text-align: center;
+      text-decoration: none;
+      margin: 4px 2px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+    }
+
+    .button1 {
+      background-color: #008CBA;
+      color: white;
+      padding: 10px 15px;
+      border:none;
+      border-radius:10px;
+    }
+    .button1:hover {
+      background-color: green;
+      color: white;
+    }
+
+    .button2 {
+      background-color: red;
+      color: white;
+      padding: 10px 15px;
+      border:none;
+      border-radius:10px;
+    }
+    .button2:hover {
+      background-color: #d8d8d8;
+      color: red;
+    }
+
+    .button3 {
+      
+      background-color: green;
+      color: white;
+      padding: 10px 15px;
+      border:none;
+      border-radius:10px;
+    }
+    .button3:hover {
+      background-color: #d8d8d8;
+      color: green;
+    }
+  </style>
   
 </head>
 <body>
@@ -86,12 +134,12 @@
               <input type="text" class="form-control">
             </div>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <form class="search-form" action="#">
               <i class="icon-search"></i>
               <input type="search" class="form-control" placeholder="Search Here" title="Search here">
             </form>
-          </li>
+          </li> -->
          <!--  <li class="nav-item dropdown">
             <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
               <i class="icon-mail icon-lg"></i>
@@ -248,6 +296,15 @@
             </a>
             
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="sales/sales.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Sales</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
+          </li>
           
           
           <!-- <li class="nav-item nav-category">pages</li>
@@ -275,9 +332,9 @@
                 <div class="d-sm-flex align-items-center justify-content-between border-bottom">
                   <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true" style="font-size: 14px;">Overview</a>
+                      <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true" style="font-size: 14px;">POS</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                       <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false" style="font-size: 14px;">Audiences</a>
                     </li>
                     <li class="nav-item">
@@ -285,7 +342,7 @@
                     </li>
                     <li class="nav-item">
                       <a class="nav-link border-0" id="more-tab" data-bs-toggle="tab" href="#more" role="tab" aria-selected="false" style="font-size: 14px;">More</a>
-                    </li>
+                    </li> -->
                   </ul>
                   <!-- <div>
                     <div class="btn-wrapper">
@@ -316,7 +373,78 @@
                                 <div class="d-sm-flex justify-content-between align-items-start">
                                  
                                   <div>
-                                    
+                                    <table class="table table-bordered">
+                                      <tr>
+                                      <?php
+                                        $stmt=$conn->query("SELECT product_id, product_name, sprice, quantity from products");
+                                        $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
+                                      ?>
+                                      <form action="invoice.php?uid=<?=$_GET['uid']?>" method="post">  
+                                        <td colspan="3">
+                                          <select name="selectProduct" required>
+                                            <option value="">Select a Product</option>
+                                            <?php
+                                              foreach ($row as $data) {
+                                            ?>
+                                              <option value="<?=$data['product_name']?>"><?=$data['product_name']?></option>
+                                            <?php
+                                              }
+                                            ?>
+                                          </select>
+                                        </td>
+                                        <td>Qty: <input type="number" name="selectQuantity" size=5 required></td>
+                                        <td><button class="button1"><b>Add</b></button></td>
+                                      </form>  
+                                      </tr>
+                                      <tr>
+                                        <th>Product Name</th>
+                                        <th>Rate</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
+                                      </tr>
+                                      <?php
+                                        $stmt=$conn->query("SELECT * from invoice");
+                                        
+                                        
+                                        while ($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+                                      ?>
+                                        <tr>
+                                          <td><?=$row['product_name']?></td>
+                                          <td><?=$row['sprice']?></td>
+                                          <td><?=$row['quantity']?></td>
+                                          <td><?=$row['amt']?></td>
+                                          <td>
+                                            <form action="deleteinvoice.php?uid=<?=$_GET['uid']?>&invoice=<?=$row['invoice_no']?>" method="post">
+                                              <button name="invoice" class="button2"><b>Cancel</b></button>
+                                            </form>
+                                            
+                                          </td>
+                                        </tr>
+                                      <?php
+                                        }
+                                      ?>
+                                      <tr>
+                                        <td colspan="3"><b>Grand Total:-</b></td>
+                                        <td>
+                                          <?php
+                                            $stmt=$conn->query("SELECT SUM(amt) as grandTotal from invoice");
+                                            $row=$stmt->fetch(PDO::FETCH_ASSOC);
+                                            echo $row['grandTotal'];
+                                          ?>
+
+                                        </td>
+                                        <td>
+                                          <form action="sales/sales.php?uid=<?=$_GET['uid']?>" method="POST" style="float: left;">
+                                            <button name="sales" class="button3"><b>Save</b></button>
+                                          </form> &nbsp;&nbsp;
+
+                                          <form action="deleteinvoice.php?uid=<?=$_GET['uid']?>" method="post" style="float: right;">
+                                              <button name="clearinvoice" class="button2"><b>Clear All</b></button>
+                                            </form>
+                                        </td>
+                                      </tr>
+                                    </table>
                                   </div>
                                 </div>
                                 

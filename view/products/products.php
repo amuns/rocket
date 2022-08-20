@@ -31,6 +31,7 @@
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="../css/vertical-layout-light/style.css">
+
   
   <style rel="stylesheet">
     .button {
@@ -127,10 +128,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <form class="search-form" action="#">
-              <i class="icon-search"></i>
-              <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-            </form>
+            
           </li>
          
           </li> 
@@ -212,6 +210,15 @@
             </a>
             
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="../sales/sales.php?uid=<?=$_GET['uid']?>">
+              <!-- <i class="menu-icon mdi mdi-floor-plan"></i> -->
+              <span class="menu-title" style="font-size: 15px;">Sales</span>
+              <!-- <i class="menu-arrow"></i>  -->
+            </a>
+            
+          </li>
           
           
           
@@ -254,20 +261,30 @@
                         </div>
                       </div>
                     </div>
+                    <form class="search-form" action="products.php?uid=<?=$_GET['uid']?>">
+                      <textarea name="" cols="30" id="search_data" rows="1" placeholder="Search by Product ID/Name"></textarea>
+                      <button><i class="icon-search"></i></button>
+                    </form>
+                    
                     <p><?=flashMessages()?></p><br>
+                    
+                    
+                  
                     <div class="row">
-                      <div class="col-lg-10 d-flex flex-column">
+                      <div class="col-lg-13 d-flex flex-column">
                         <div class="row flex-grow">
                           <div class="col-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                  <table class="table table-bordered">
+                                  
+                                  <table class="table table-bordered" id="table_data">
                                     <tr>
                                       <th>Product ID</th>
                                       <th>Product Key</th>
                                       <th>Product Name</th>
-                                      <th>Price (RS.)</th>
+                                      <th>CP (RS.)</th>
+                                      <th>SP (RS.)</th>
                                       <th>Quantity</th>
                                       <th>Company</th>
                                       <th>CreatedAt</th>
@@ -282,7 +299,8 @@
                                           echo "<td>".validate($row['product_id'])."</td>";
                                           echo "<td>".validate($row['product_key'])."</td>";
                                           echo "<td>".validate($row['product_name'])."</td>";
-                                          echo "<td>RS. ".validate($row['price'])."</td>";
+                                          echo "<td>RS. ".validate($row['cprice'])."</td>";
+                                          echo "<td>RS. ".validate($row['sprice'])."</td>";
                                           echo "<td>".validate($row['quantity'])."</td>";
                                           $cid=$row['company_id'];
                                           $sql="SELECT company_name from company WHERE company_id='$cid'";
@@ -294,10 +312,10 @@
                                           ?>
                                             <td>
                                               
-                                                <button class="button1" onclick="window.location.href='editproduct.php?uid=<?=$_GET['uid']?>&pid=<?=$row['product_id']?>';"><b>Edit</b></button> &nbsp; 
+                                                <button class="button1" style="position: relative; left: 8px;" onclick="window.location.href='editproduct.php?uid=<?=$_GET['uid']?>&pid=<?=$row['product_id']?>';"><b>Edit</b></button> &nbsp; 
                                               <!-- button ko lagi link create garna onclick="window.location.href='deletecompany.php?';" -->
                                                 <form method="POST" action="deleteproduct.php?uid=<?=$_GET['uid']?>&&pid=<?=$row['product_id']?>" style="float: right;">
-                                                  <button class="button2" name="deleteproduct" ><b>Delete</b></button>
+                                                  <button class="button2" style="position: relative; left: -8px" name="deleteproduct" ><b>Delete</b></button>
                                                 </form>
                                             </td>      
                                           <?php
