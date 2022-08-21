@@ -359,7 +359,7 @@
                       
                       <div class="col-lg-4 d-flex flex-column">
                         <div class="row flex-grow">
-                          
+                          <?=flashMessages();?>
                           
                         </div>
                       </div>
@@ -380,13 +380,17 @@
                                         $row=$stmt->fetchAll(PDO::FETCH_ASSOC);
                                       ?>
                                       <form action="invoice.php?uid=<?=$_GET['uid']?>" method="post">  
-                                        <td colspan="3">
+                                        <td colspan="4">
                                           <select name="selectProduct" required>
                                             <option value="">Select a Product</option>
                                             <?php
                                               foreach ($row as $data) {
+                                                $pid=$data['product_id'];
+                                                $pname=$data['product_name'];
+                                                $stmt1=$conn->query("SELECT product_key, quantity from products WHERE product_id=$pid");
+                                                $productqty=$stmt1->fetch(PDO::FETCH_ASSOC);
                                             ?>
-                                              <option value="<?=$data['product_name']?>"><?=$data['product_name']?></option>
+                                              <option value="<?=$productqty['product_key']?>"><?=$data['product_name']?>(<?=$productqty['product_key']?>)| Stock:-<?=$productqty['quantity']?></option>
                                             <?php
                                               }
                                             ?>
@@ -398,6 +402,7 @@
                                       </tr>
                                       <tr>
                                         <th>Product Name</th>
+                                        <th>Product Key</th>
                                         <th>Rate</th>
                                         <th>Quantity</th>
                                         <th>Total</th>
@@ -411,6 +416,7 @@
                                       ?>
                                         <tr>
                                           <td><?=$row['product_name']?></td>
+                                          <td><?=$row['product_key']?></td>
                                           <td><?=$row['sprice']?></td>
                                           <td><?=$row['quantity']?></td>
                                           <td><?=$row['amt']?></td>
@@ -425,7 +431,7 @@
                                         }
                                       ?>
                                       <tr>
-                                        <td colspan="3"><b>Grand Total:-</b></td>
+                                        <td colspan="4"><b>Grand Total:-</b></td>
                                         <td>
                                           <?php
                                             $stmt=$conn->query("SELECT SUM(amt) as grandTotal from invoice");

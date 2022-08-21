@@ -15,8 +15,9 @@
             $amt=$data['amt'];
             $profit=$data['profit'];
             $sprice=$data['sprice'];
+            $pkey=$data['product_key'];
 
-            $stmt2=$conn->prepare("INSERT INTO sales(invoice_no, date, product_name, qty, amt, profit, sprice) VALUES(:a, :b, :c, :d, :e, :f, :g)");
+            $stmt2=$conn->prepare("INSERT INTO sales(invoice_no, date, product_name, qty, amt, profit, sprice, product_key) VALUES(:a, :b, :c, :d, :e, :f, :g, :h)");
             $stmt2->execute(array(
                 ":a"=>$invoice,
                 ":b"=>$date,
@@ -24,11 +25,12 @@
                 ":d"=>$qty,
                 ":e"=>$amt,
                 ":f"=>$profit,
-                ":g"=>$sprice
+                ":g"=>$sprice,
+                ":h"=>$pkey
             ));
 
-            $stmt3=$conn->prepare("UPDATE products SET quantity=quantity-$qty WHERE product_name='$pname'");
-            $stmt3->execute();
+            /* $stmt3=$conn->prepare("UPDATE products SET quantity=quantity-$qty WHERE product_name='$pname'");
+            $stmt3->execute(); */
         }
     }
 ?>
@@ -309,10 +311,10 @@
                                       <th>Date</th>
                                       <th>Product Name</th>
                                       <th>Quantity</th>
-                                      <th>Amount</th>
                                       <th>SP (RS.)</th>
+                                      <th>Amount</th>
                                       <th>Profit</th>
-                                      <th>Action</th>
+                                      <!-- <th>Action</th> -->
                                     </tr>
 
                                     <?php 
@@ -325,14 +327,14 @@
                                           echo "<td>".validate($row['date'])."</td>";
                                           echo "<td>".validate($row['product_name'])."</td>";
                                           echo "<td>".validate($row['qty'])."</td>";
-                                          echo "<td>RS. ".validate($row['amt'])."</td>";
                                           echo "<td>RS. ".validate($row['sprice'])."</td>";
+                                          echo "<td>RS. ".validate($row['amt'])."</td>";
                                           echo "<td>RS. ".validate($row['profit'])."</td>";
                                           ?>
-                                            <td>
+                                            <!-- <td>
                                               
                                                 action
-                                            </td>      
+                                            </td>       -->
                                           <?php
                                         echo "</tr>";
                                       }
