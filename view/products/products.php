@@ -261,9 +261,9 @@
                         </div>
                       </div>
                     </div>
-                    <form class="search-form" action="products.php?uid=<?=$_GET['uid']?>">
-                      <textarea name="" cols="30" id="search_data" rows="1" placeholder="Search by Product ID/Name"></textarea>
-                      <button><i class="icon-search"></i></button>
+                    <form class="search-form" action="products.php?uid=<?=$_GET['uid']?>" method="POST">
+                      <textarea name="search_data" cols="30" rows="1" placeholder="Search by Product Name"></textarea>
+                      <input type="submit" value="Search">
                     </form>
                     
                     <p><?=flashMessages()?></p><br>
@@ -277,7 +277,22 @@
                             <div class="card card-rounded">
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                  
+                                <?php
+                                    if(isset($_POST['search_data'])){
+                                      $keyword=$_POST['search_data'];
+                                      $sql=("SELECT * FROM products WHERE product_name LIKE '%$keyword%'");
+                                    }
+                                    else{
+                                      $sql=("SELECT * FROM products");
+                                    }                                    
+                                    
+                                    $stmt=$conn->query($sql);
+                                    // $rowcount=mysqli_num_rows($stmt);
+                                    if(!$stmt->rowCount()){
+                                      echo "<br><h2 style='position: relative; left: -700px;'><b><i>No Results</i></b></h2>";
+                                    }
+                                    else{
+                                  ?>  
                                   <table class="table table-bordered" id="table_data">
                                     <tr>
                                       <th>Product ID</th>
@@ -293,7 +308,6 @@
                                     </tr>
 
                                     <?php 
-                                      $stmt=$conn->query('SELECT * from products');
                                       while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
                                         echo "<tr>";
                                           echo "<td>".validate($row['product_id'])."</td>";
@@ -324,6 +338,9 @@
                                     ?>
 
                                   </table>
+                              <?php 
+                                }
+                              ?>
                                   <!-- <table class="table table-bordered"> -->
                             
                                 <!-- <td>

@@ -90,6 +90,8 @@
       padding: 10px 15px;
       border:none;
       border-radius:10px;
+      position: relative;
+        left: -20px;
     }
 
     .button2:hover{
@@ -262,9 +264,9 @@
                     <li class="nav-item">
                       <a class="nav-link active ps-0" href="company.php?uid=<?=$_GET['uid']?>" style="font-size: 14px;">Overview</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                       <a class="nav-link" href="addproduct.php?uid=<?=$_GET['uid']?>" role="tab" aria-selected="true" style="font-size: 14px;">Allow Discount</a>
-                    </li>
+                    </li> -->
                    
                   </ul>
                   <!-- <div>
@@ -287,9 +289,10 @@
                         </div>
                       </div>
                     </div>
-                    <form class="search-form" action="products.php?uid=<?=$_GET['uid']?>">
-                      <textarea name="" cols="30" id="search_data" rows="1" placeholder="Search by Date"></textarea>
-                      <button><i class="icon-search"></i></button>
+                    <form class="search-form" action="sales.php?uid=<?=$_GET['uid']?>" method="POST">
+                      <textarea name="search_data" cols="30" rows="1" placeholder="Search by Product"></textarea>
+                      <input type="submit" value="Search">
+                      <!-- <button><i class="icon-search"></i></button> -->
                     </form>
                     
                     <p><?=flashMessages()?></p><br>
@@ -303,44 +306,62 @@
                             <div class="card card-rounded">
                               <div class="card-body">
                                 <div class="d-sm-flex justify-content-between align-items-start">
-                                  
-                                  <table class="table table-bordered" id="table_data">
-                                    <tr>
-                                      <th>S No.</th>
-                                      <th>Invoice No.</th>
-                                      <th>Date</th>
-                                      <th>Product Name</th>
-                                      <th>Quantity</th>
-                                      <th>SP (RS.)</th>
-                                      <th>Amount</th>
-                                      <th>Profit</th>
-                                      <!-- <th>Action</th> -->
-                                    </tr>
+                                  <?php
+                                    if(isset($_POST['search_data'])){
+                                      $keyword=$_POST['search_data'];
+                                      $sql=("SELECT * FROM sales WHERE product_name LIKE '%$keyword%'");
+                                    }
+                                    else{
+                                      $sql=("SELECT * FROM sales ORDER BY date DESC");
+                                    }                                    
+                                    
+                                    $stmt=$conn->query($sql);
+                                    // $rowcount=mysqli_num_rows($stmt);
+                                    if(!$stmt->rowCount()){
+                                      echo "<br><h2 style='position: relative; left: -700px;'><b><i>No Results</i></b></h2>";
+                                    }
+                                    else{
+                                  ?>  
+                                    <table class="table table-bordered" >
+                                      <tr>
+                                        <th>S No.</th>
+                                        <th>Invoice No.</th>
+                                        <th>Date</th>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>SP (RS.)</th>
+                                        <th>Amount</th>
+                                        <th>Profit</th>
+                                        <th>Action</th>
+                                      </tr>
 
-                                    <?php 
-                                      $stmt=$conn->query('SELECT * from sales');
-                                      $i=1;
-                                      while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
-                                        echo "<tr>";
-                                          echo "<td>".$i."</td>";$i++;
-                                          echo "<td>".validate($row['invoice_no'])."</td>";
-                                          echo "<td>".validate($row['date'])."</td>";
-                                          echo "<td>".validate($row['product_name'])."</td>";
-                                          echo "<td>".validate($row['qty'])."</td>";
-                                          echo "<td>RS. ".validate($row['sprice'])."</td>";
-                                          echo "<td>RS. ".validate($row['amt'])."</td>";
-                                          echo "<td>RS. ".validate($row['profit'])."</td>";
-                                          ?>
-                                            <!-- <td>
-                                              
-                                                action
-                                            </td>       -->
-                                          <?php
-                                        echo "</tr>";
-                                      }
-                                    ?>
+                                      <?php 
+                                        $i=1;
+                                        while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
+                                          echo "<tr>";
+                                            echo "<td>".$i."</td>";$i++;
+                                            echo "<td>".validate($row['invoice_no'])."</td>";
+                                            echo "<td>".validate($row['date'])."</td>";
+                                            echo "<td>".validate($row['product_name'])."</td>";
+                                            echo "<td>".validate($row['qty'])."</td>";
+                                            echo "<td>RS. ".validate($row['sprice'])."</td>";
+                                            echo "<td>RS. ".validate($row['amt'])."</td>";
+                                            echo "<td>RS. ".validate($row['profit'])."</td>";
+                                            ?>
+                                              <td>
+                                                <form method="POST" action="deletesales.php?uid=<?=$_GET['uid']?>&&invoice=<?=$row['invoice_no']?>" style="float: right;">
+                                                  <button class="button2" name="deletesales" ><b>Delete</b></button>
+                                                </form>
+                                              </td>      
+                                            <?php
+                                          echo "</tr>";
+                                        }
+                                      ?>
 
-                                  </table>
+                                    </table>
+                                  <?php
+                                    }
+                                  ?>
                                   <!-- <table class="table table-bordered"> -->
                             
                                 <!-- <td>
@@ -366,13 +387,18 @@
                               <div class="card-body">
                                 <div class="row">
                                   <div class="col-lg-12">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <!-- <div class="d-flex justify-content-between align-items-center">
                                       <h4 class="card-title card-title-dash">Todo list</h4>
                                       <div class="add-items d-flex mb-0">
-                                        <!-- <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> -->
+                                        <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
                                         <button class="add btn btn-icons btn-rounded btn-primary todo-list-add-btn text-white me-0 pl-12p"><i class="mdi mdi-plus"></i></button>
                                       </div>
-                                    </div>
+                                    </div> -->
+                                    <?php 
+                                      $stmt1=$conn->query("SELECT sum(profit) as totalProfit from sales");
+                                      $profit=$stmt1->fetch(PDO::FETCH_ASSOC);
+                                    ?>
+                                    Total Profit:- <?=$profit['totalProfit']?>
                                     <div class="list-wrapper">
                                       <ul class="todo-list todo-list-rounded">
                                         <!-- <li class="d-block">
